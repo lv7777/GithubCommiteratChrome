@@ -1,32 +1,21 @@
-
-
 $(function () {
-    $github_checkbox = $("#githubon");
-    $local_checkbox = $("#localon");
+   var $github_checkbox = $("#githubon");
+   var $local_checkbox = $("#localon");
 
-
-    $ltime = $("#localtime");
-    $gtime = $("#githubtime");
-    $inputhash = $(".flexbox0");
+   var $ltime_ms = $("#localtime");
+   var $gtime = $("#githubtime");
+   var  $inputhash = $(".flexbox0");
     
-    $repo = $("#repo");
-    $pass = $("#pass");
-    $username = $("#username");    
+   var  $repo = $("#repo");
+   var $pass = $("#pass");
+   var $username = $("#username"); 
     
     $inputhash.click(function (e) {
-        
-        //よくわからんけどthisのclassは全てflexboxになってる
         //FIXME:子要素クリックした時にも発火されるのでそれの制御
         //labelの要素/tes/.test((e.toElement).attr("class")) 
         if (e.target.tagName === 'DIV' || e.target.tagName === 'LABEL') {
-
             e.preventDefault();
-            //一応完成。やったね！
-            //okクリックされると<input>が増える。
-            //tureはeventもコピーするか
-
             //flexboxのjqueryobjを全部取ってくる。その中から一番でかい数字を取ってくる。その後一番でかい数字に1を足す。
-            //複数のflexbox
         
             //一番でかい数字を保管
             var num = 0;
@@ -54,21 +43,21 @@ $(function () {
 
     function checkmain(e) {
        console.log("checkmain");
+       //ConfirmationGithub()
        saveStrage(true);
        // check_inputdata();
-        //sendgithub();
     }
     
     //データがちゃんと入力されているかどうか。jqueryobjもsavestrageのjqobj持ってきたいよね
-    function check_inputdata(ltime,gtime,url,repo,pass,username){
-       let $ltime = $("#localtime");
-       let $gtime = $("#githubtime");
-       let $url = $("#url");
-       let $repo = $("#repo");
-       let $pass = $("#pass");
-       let $username = $("#username");
+    function check_inputdata(ltime_ms,gtime,url,repo,pass,username){
+    //    let $ltime_ms = $("#localtime");
+    //    let $gtime = $("#githubtime");
+        let $url = $("#url");
+    //    let $repo = $("#repo");
+    //    let $pass = $("#pass");
+    //    let $username = $("#username");
        
-        let inputarray = [$ltime, $gtime, $url,$repo,$pass,$username];
+        let inputarray = [$ltime_ms, $gtime, $url,$repo,$pass,$username];
        
         for(let i of inputarray){            
             if(i.val()===""){
@@ -77,7 +66,7 @@ $(function () {
         }   
     }
 
-    function sendgithub() {
+    function ConfirmationGithub() {
         var user = $("#username").val();//.text();
         //inputにはval()を使う
         var xhr = new XMLHttpRequest();
@@ -99,7 +88,6 @@ $(function () {
 
     function dataparse(res) {
         let flag = false;
-    
         //xhrで帰ってきたオブジェクトを整形して確認する。
         console.log(res);
         //配列にonjが入っている。
@@ -118,27 +106,9 @@ $(function () {
         function saveStrage(bool) {
             if (bool) {
                 //あったらlocalstrageに保存
-                
-               var $ltime = $("#local_time");
-               var $gtime = $("#github_time");
-              
-              
-               var $username = $("#username");
-               var $pass = $("#pass");
-               var $repo = $("#repo");
-              // var $githubdir=$("path");
-              // var $url = $("#url");
-               
-              
                var regpathobj={};
-/*
-{
-    ".*":"xpath","":""
-}
-の組み合わせにするとエラーが出るので
-
-githubのissueみて、どうぞ
-*/
+               
+               //データ構造の変更。githubのissueを見て、どうぞ
                var regarr=[];
                var xpatharr=[];
                
@@ -157,9 +127,8 @@ githubのissueみて、どうぞ
                regpathobj["regexp"]=regarr;
                regpathobj["xpath"]=xpatharr;
                
-
                var obj={};
-                let inputarray = [ $ltime,$gtime,$repo, $pass, $username];
+                let inputarray = [ $ltime_ms,$gtime,$repo, $pass, $username];
                 //もしかしたらbackgroundscriptに投げることが必要かも
                 for (var i of inputarray) {
                     // localStorage.setItem(i.attr("id"), i.val())
@@ -182,3 +151,4 @@ githubのissueみて、どうぞ
              jq.css("box-shadow","inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(233, 102, 102, 0.6)");
         }
     });
+    

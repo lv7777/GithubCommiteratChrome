@@ -64,7 +64,6 @@ function getpagedocument(contentxpath) {
     return littlecontent;
 }
  
-//TODO:ちゃんと作る。
 //ファイル名をurlから取得
 function getFileName(o) {
     var lastdomain = o.domainarr[o.domainarr.length - 1]
@@ -80,8 +79,7 @@ function getFileName(o) {
 
             if (0) {
                 //これは面倒だしその確率は殆ど無いからいいや
-                //もしdefault.htmlがすでにあるなら新しくランダムでHTMLを決定。
-             
+                //もしdefault.htmlがすでにあるなら新しくランダムでHTMLを決定。            
             }
 
         }
@@ -159,13 +157,18 @@ function filesendAPIararysis(username, repo, pass) {
 function createrepo(username,pass,repo){
     var xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
+    
+    let data={
+        "description":"xhr",
+        "name":repo
+    };
 
     xhr.addEventListener("readystatechange", function () {
         if (this.readyState === 4) {
             console.log(this.responseText);
         }
     });
-    xhr.open("PUT", "https://api.github.com/repos/");
+    xhr.open("PUSH", "https://api.github.com/repos/");
     let basic = window.btoa(unescape(encodeURIComponent(username + ":" + pass)));
     xhr.setRequestHeader("authorization", "Basic " + basic);
 
@@ -174,6 +177,7 @@ function createrepo(username,pass,repo){
     xhr.setRequestHeader("cache-control", "no-cache");
 
     xhr.send(data);
+    //TODO:data is 何？
 }
 function createfile(encodedata, username, pass, repo, path, file) {
     var data = JSON.stringify({
