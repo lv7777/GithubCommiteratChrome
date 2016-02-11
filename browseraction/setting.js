@@ -1,5 +1,6 @@
-$(function () {
 
+
+$(function () {
     $github_checkbox = $("#githubon");
     $local_checkbox = $("#localon");
 
