@@ -168,7 +168,7 @@ function createrepo(username,pass,repo){
             console.log(this.responseText);
         }
     });
-    xhr.open("PUSH", "https://api.github.com/repos/");
+    xhr.open("POST", "https://api.github.com/user/repos");
     let basic = window.btoa(unescape(encodeURIComponent(username + ":" + pass)));
     xhr.setRequestHeader("authorization", "Basic " + basic);
 
@@ -176,8 +176,8 @@ function createrepo(username,pass,repo){
     xhr.setRequestHeader("content-type", "application/json");
     xhr.setRequestHeader("cache-control", "no-cache");
 
-    xhr.send(data);
-    //TODO:data is 何？
+    xhr.send(data);    
+    
 }
 function createfile(encodedata, username, pass, repo, path, file) {
     var data = JSON.stringify({
