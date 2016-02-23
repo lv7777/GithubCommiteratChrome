@@ -182,6 +182,33 @@ function createrepo(username,pass,repo){
 
     xhr.send(formdata);
 }
+function createrepoatfetch(username,pass,repo){
+    //fetch
+    formdata.append("description","xhr");
+    formdata.append("name",repo);
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+    
+    let data={
+        'description':'xhr',
+        'name':repo
+    };
+
+    xhr.addEventListener('readystatechange', function () {
+        if (this.readyState === 4) {
+            console.log(this.responseText);
+        }
+    });
+    xhr.open('POST', 'https://api.github.com/user/repos');
+    let basic = window.btoa(unescape(encodeURIComponent(username + ':' + pass)));
+    xhr.setRequestHeader('authorization', 'Basic ' + basic);
+
+    //xhr.setRequestHeader('name', repo);
+    xhr.setRequestHeader('content-type', 'application/json');
+    xhr.setRequestHeader('cache-control', 'no-cache');
+
+    xhr.send(data);
+}
 function createfile(encodedata, username, pass, repo, path, file) {
     var data = JSON.stringify({
         "message": "my commit message",
