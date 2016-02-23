@@ -44,8 +44,8 @@ function main(d) {
             update(encodesrc, d.username, d.pass, d.repo, urlobj.dirpath, urlobj.filename);
         } else {
             //create
-            createrepo();
-            createfile(encodesrc, d.username, d.pass, d.repo, urlobj.dirpath, urlobj.filename);
+            createrepo(d.username, d.pass, d.repo);
+           // createfile(encodesrc, d.username, d.pass, d.repo, urlobj.dirpath, urlobj.filename);
         }
     } else {
         console.log("no active");
@@ -155,29 +155,32 @@ function filesendAPIararysis(username, repo, pass) {
     xhr.send(null);
 }
 function createrepo(username,pass,repo){
+    //成功しない為、new formを使う。
+    var formdata=new FormData();
+    formdata.append("description","xhr");
+    formdata.append("name",repo);
     var xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
     
     let data={
-        "description":"xhr",
-        "name":repo
+        'description':'xhr',
+        'name':repo
     };
 
-    xhr.addEventListener("readystatechange", function () {
+    xhr.addEventListener('readystatechange', function () {
         if (this.readyState === 4) {
             console.log(this.responseText);
         }
     });
-    xhr.open("POST", "https://api.github.com/user/repos");
-    let basic = window.btoa(unescape(encodeURIComponent(username + ":" + pass)));
-    xhr.setRequestHeader("authorization", "Basic " + basic);
+    xhr.open('POST', 'https://api.github.com/user/repos');
+    let basic = window.btoa(unescape(encodeURIComponent(username + ':' + pass)));
+    xhr.setRequestHeader('authorization', 'Basic ' + basic);
 
-    xhr.setRequestHeader("name", repo);
-    xhr.setRequestHeader("content-type", "application/json");
-    xhr.setRequestHeader("cache-control", "no-cache");
+    //xhr.setRequestHeader('name', repo);
+    xhr.setRequestHeader('content-type', 'application/json');
+    xhr.setRequestHeader('cache-control', 'no-cache');
 
-    xhr.send(data);    
-    
+    xhr.send(formdata);
 }
 function createfile(encodedata, username, pass, repo, path, file) {
     var data = JSON.stringify({
