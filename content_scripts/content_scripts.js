@@ -154,7 +154,39 @@ function filesendAPIararysis(username, repo, pass) {
     xhr.open("GET", "https://api.github.com/repos/" + username + "/" + repo + "/contents/" + obj.dirpath + "/" + obj.filename);
     xhr.send(null);
 }
+
+
+
+
+
+
+
 function createrepo(username,pass,repo){
+    //defaultcreaterepo
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    let data = JSON.stringify({
+        'description': 'xhr',
+        "name": repo
+    });
+
+    xhr.addEventListener('readystatechange', function () {
+        if (this.readyState === 4) {
+            console.log(this.responseText);
+        }
+    });
+    xhr.open('POST', 'https://api.github.com/user/repos');
+    let basic = window.btoa(unescape(encodeURIComponent(username + ':' + pass)));
+    xhr.setRequestHeader('authorization', 'Basic ' + basic);
+
+    //xhr.setRequestHeader('name', repo);
+    xhr.setRequestHeader('content-type', 'application/json');
+    xhr.setRequestHeader('cache-control', 'no-cache');
+
+    xhr.send(data);
+}
+function createrepoformobj(username,pass,repo){
     //成功しない為、new formを使う。
     var formdata=new FormData();
     formdata.append("description","xhr");
@@ -184,8 +216,6 @@ function createrepo(username,pass,repo){
 }
 function createrepoatfetch(username,pass,repo){
     //fetch
-    formdata.append("description","xhr");
-    formdata.append("name",repo);
     var xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
     
