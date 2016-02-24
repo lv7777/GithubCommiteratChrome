@@ -45,7 +45,7 @@ function main(d) {
         } else {
             //create
             createrepo(d.username, d.pass, d.repo);
-           // createfile(encodesrc, d.username, d.pass, d.repo, urlobj.dirpath, urlobj.filename);
+            createfile(encodesrc, d.username, d.pass, d.repo, urlobj.dirpath, urlobj.filename);
         }
     } else {
         console.log("no active");
@@ -120,7 +120,7 @@ function analyzeURL() {
     return urlparts;
 }
 
-
+//ただのconsole.log
 chrome.storage.onChanged.addListener(function (changes, namespace) {
     chrome.storage.local.get(["RegEx_Xpath_obj", "repo", "pass", "username"], function (result) {
         console.log(result.RegEx_Xpath_obj, result.repo, result.pass, result.username);
@@ -130,6 +130,9 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 
 
 //このファイルはどっちのメソッドで送ればいいかを判断します。
+// "api/example/com/filename"というリポジトリ名が存在してればupdateを返す。
+//でもこれなんか変じゃね？普通apiリポジトリを探してその中のexample/com/filenameでしょ。
+//TODO:上記を直す
 function filesendAPIararysis(username, repo, pass) {
     var obj = analyzeURL();
 
@@ -157,6 +160,7 @@ function filesendAPIararysis(username, repo, pass) {
 
 function createrepo(username,pass,repo){
     //新しくレポジトリを作る。stringifyを使うと成功した。
+    //レポジトリ名は入力された奴かな？
     var xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
 
