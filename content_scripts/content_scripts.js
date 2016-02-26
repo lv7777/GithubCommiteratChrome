@@ -17,8 +17,7 @@
 function checkRegEx(reg) {
     //データ構造変更
     //regはオブジェクトにする予定謎系オブジェクトになったsee #15
-    //undefをよみこんでエラー吐くのをstop
-    
+    //undefをよみこんでエラー吐くのをstop 
     var regarr=reg.regexp;
     var xpatharr=reg.xpath;
     var url = window.location.href;
@@ -31,10 +30,9 @@ function checkRegEx(reg) {
         }
     }
     return 0;
-    
 }
 function main(d) {
-    if (document.designMode == "on") {
+    if (extensionpages()) {
         console.log(d);
         var src = getpagedocument(d.RegEx_Xpath_obj);
         var encodesrc = window.btoa(unescape(encodeURIComponent(src)));
@@ -42,8 +40,6 @@ function main(d) {
         //promiseを使う in promiseブランチ
         //どっちもresolveにしてifで値を変化させてrejectはエラー用にしたほうがいいかもね
         filesendAPIararysis(d.username, d.repo, d.pass).then(function(){
-            //update
-            //422エラーが出、、、出ますよ
             update(encodesrc, d.username, d.pass, d.repo, urlobj.dirpath, urlobj.filename);
         },
         function () {
@@ -57,7 +53,15 @@ function main(d) {
     }
 }
 
+//どういう状態になったら動作を開始するかのルール追加(どのページかは関係ない)
 
+//特定のregexp(ページ)にマッチしてなおかつイベントAが発火したら動作するけどページ２では無条件で白化したい時とかはどうする？
+//いっその事regexpのやつもココに入れるか。
+function extensionpages(){
+    if(document.designMode == "on" || /https?:\/\/developer\.mozilla\.org.*\$edit/.test(window.location.href) ){
+        return 1;
+    }
+}
 
 function getpagedocument(contentxpath) {
     //設定からどこのhtml要素を読み込むか判断する。e.g. MDNならedit部分とか    
@@ -101,8 +105,7 @@ function analyzeURL() {
     /*
     {
         allurl:URL全て
-        urlarr:各部分をarrに分割
-        
+        urlarr:各部分をarrに分割    
     }
      */
     
@@ -134,10 +137,6 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 
 
 //このファイルはどっちのメソッドで送ればいいかを判断します。
-// "api/example/com/filename"というリポジトリ名が存在してればupdateを返す。
-//でもこれなんか変じゃね？普通apiリポジトリを探してその中のexample/com/filenameでしょ。
-//TODO:上記を直す
-
 //promiseを返す
 function filesendAPIararysis(username, repo, pass) {
 
@@ -153,11 +152,12 @@ function filesendAPIararysis(username, repo, pass) {
                 if (obj.name) {
                     console.log("update")
                     resolve();
-                    //return 1;
-                } else if (typeof(obj.name) === undefined || obj.message == "Not Found") {
+                } else if(obj.message == "This repository is empty."){
+                    console.log("new content create.but not used create repo.");
+                    resolve();
+                }else if (typeof(obj.name) === undefined || obj.message == "Not Found") {
                     console.log("use create")
-                    reject();
-                    //return 0;
+                    reject();//どっちもresolveにしてifで分けたい。
                 }
 
             }
@@ -223,14 +223,6 @@ function createfile(encodedata, username, pass, repo, path, file) {
 
 
 function update(encodedata, username, pass, repo, path, file) {
-    /*
-    httpstatuscode:422
-    
-    "message": "Invalid request.\n\n\"sha\" wasn't supplied.",
-    
-    #22 を参照
-    
-    */
     //ここもpromise使わないと先に進んでいってしまう。
     var sha;
     getsha1(username, pass, repo, path, file).then(function ok(shaobj) {
