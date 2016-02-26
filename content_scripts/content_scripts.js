@@ -4,8 +4,9 @@
     //setting.jsからchrome.strage.localに保存したデータの読み出し
     //TODO:"object{url:xpath}"なデータを追加urlの正規表現がキーでvalはそのURLのどの部分のhtmlを抜き出すかのxpath
     console.log("init");
-    chrome.storage.local.get(["url", "repo", "pass", "username", "RegEx_Xpath_obj"],function(result) {
-        console.log(result.url, result.repo, result.pass, result.username, result.RegEx_Xpath_obj);
+    var keyarray=["url", "repo", "pass", "username", "RegEx_Xpath_obj","github_interval"];
+    chrome.storage.local.get(keyarray,function(result) {
+        console.log(result.url, result.repo, result.pass, result.username, result.RegEx_Xpath_obj,result.github_interval);
         if (checkRegEx(result.RegEx_Xpath_obj)) {//正規表現にマッチしているか？        
             console.log(result);
             main(result);
@@ -51,6 +52,7 @@ function main(d) {
         console.log("no active");
         setTimeout(main, 3000, d);
     }
+    //setTimeout(main, d.gtime, d);
 }
 
 //どういう状態になったら動作を開始するかのルール追加(どのページかは関係ない)

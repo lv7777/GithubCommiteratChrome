@@ -2,8 +2,8 @@ $(function () {
    var $github_checkbox = $("#githubon");
    var $local_checkbox = $("#localon");
 
-   var $ltime_ms = $("#localtime");
-   var $gtime = $("#githubtime");
+   var $ltime_ms = $("#local_interval");
+   var $gtime = $("#github_interval");
    var  $inputhash = $(".flexbox0");
     
    var  $repo = $("#repo");
