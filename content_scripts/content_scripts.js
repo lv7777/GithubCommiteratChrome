@@ -39,14 +39,17 @@ function main(d) {
         var src = getpagedocument(d.RegEx_Xpath_obj);
         var encodesrc = window.btoa(unescape(encodeURIComponent(src)));
         var urlobj = analyzeURL();//2回呼んでる。メモリ的にアレ
-        if (filesendAPIararysis(d.username, d.repo, d.pass)) {
+        //promiseを使う in promiseブランチ
+        //どっちもresolveにしてifで値を変化させてrejectはエラー用にしたほうがいいかもね
+        filesendAPIararysis(d.username, d.repo, d.pass).then(function(){
             //update
             update(encodesrc, d.username, d.pass, d.repo, urlobj.dirpath, urlobj.filename);
-        } else {
+        },
+        function () {
             //create
             createrepo(d.username, d.pass, d.repo);
             createfile(encodesrc, d.username, d.pass, d.repo, urlobj.dirpath, urlobj.filename);
-        }
+        });
     } else {
         console.log("no active");
         setTimeout(main, 3000, d);
@@ -133,29 +136,35 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 // "api/example/com/filename"というリポジトリ名が存在してればupdateを返す。
 //でもこれなんか変じゃね？普通apiリポジトリを探してその中のexample/com/filenameでしょ。
 //TODO:上記を直す
+
+//promiseを返す
 function filesendAPIararysis(username, repo, pass) {
-    var obj = analyzeURL();
 
-    var xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
-    xhr.addEventListener('readystatechange', function () {
-        if (this.readyState === 4) {
-            console.log(this.responseText);
-            var obj = JSON.parse(this.responseText);
-            if (obj.name) {
-                console.log("update")
-                return 1;
-            } else if (typeof(obj.name) === undefined || obj.message == "Not Found") {
-                console.log("use create")
-                return 0;
+    return new Promise(function(resolve,reject){       
+        var obj = analyzeURL();
+
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+        xhr.addEventListener('readystatechange', function () {
+            if (this.readyState === 4) {
+                console.log(this.responseText);
+                var obj = JSON.parse(this.responseText);
+                if (obj.name) {
+                    console.log("update")
+                    resolve();
+                    //return 1;
+                } else if (typeof(obj.name) === undefined || obj.message == "Not Found") {
+                    console.log("use create")
+                    reject();
+                    //return 0;
+                }
+
             }
+        });
 
-        }
+        xhr.open("GET", "https://api.github.com/repos/" + username + "/" + repo + "/contents/" + obj.dirpath + "/" + obj.filename);
+        xhr.send(null);        
     });
-
-
-    xhr.open("GET", "https://api.github.com/repos/" + username + "/" + repo + "/contents/" + obj.dirpath + "/" + obj.filename);
-    xhr.send(null);
 }
 
 function createrepo(username,pass,repo){
