@@ -27,7 +27,12 @@ function checkRegEx(reg) {
         var regobj=new RegExp(regarr[i])
         if ( regobj.test(url) ){
             console.log("regexpclear");
-           return 1;
+           var content;
+            //xpathでdomを取得する組み込み関数
+            content = document.evaluate(xpatharr[i],document,null,XPathResult.ANY_TYPE,null);
+            console.log(content);
+            if(0){};//チェック
+           return content;
         }
     }
     return 0;
