@@ -223,48 +223,48 @@ function createfile(encodedata, username, pass, repo, path, file) {
 
 
 function update(encodedata, username, pass, repo, path, file) {
-/*
-httpstatuscode:422
-
-"message": "Invalid request.\n\n\"sha\" wasn't supplied.",
-
-#22 を参照
-
-*/
-//ここもpromise使わないと先に進んでいってしまう。
-    var sha ;
+    /*
+    httpstatuscode:422
+    
+    "message": "Invalid request.\n\n\"sha\" wasn't supplied.",
+    
+    #22 を参照
+    
+    */
+    //ここもpromise使わないと先に進んでいってしまう。
+    var sha;
     getsha1(username, pass, repo, path, file).then(function ok(shaobj) {
         //ここでshaを取ってくる。
-        sha=shaobj.sha;
-    },function ng(errormsg){
+        sha = shaobj.sha;
+
+        var data = JSON.stringify({
+            "message": "update",
+            "branch": "master",
+            "content": encodedata,
+            "sha": sha
+        });
+
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                console.log(this.responseText);
+            }
+        });
+
+
+        xhr.open("PUT", "https://api.github.com/repos/" + username + "/" + repo + "/contents/" + path);
+        let basic = window.btoa(unescape(encodeURIComponent(username + ":" + pass)));
+        xhr.setRequestHeader("authorization", "Basic " + basic);
+
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.setRequestHeader("cache-control", "no-cache");
+
+        xhr.send(data);
+    }, function ng(errormsg) {
         console.log(errormsg);
     });
-
-    var data = JSON.stringify({
-        "message": "update",
-        "branch": "master",
-        "content": encodedata,
-        "sha": sha
-    });
-
-    var xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
-
-    xhr.addEventListener("readystatechange", function () {
-        if (this.readyState === 4) {
-            console.log(this.responseText);
-        }
-    });
-
-
-    xhr.open("PUT", "https://api.github.com/repos/" + username + "/" + repo + "/contents/" + path);
-    let basic = window.btoa(unescape(encodeURIComponent(username + ":" + pass)));
-    xhr.setRequestHeader("authorization", "Basic " + basic);
-
-    xhr.setRequestHeader("content-type", "application/json");
-    xhr.setRequestHeader("cache-control", "no-cache");
-
-    xhr.send(data);
 
 }
 
