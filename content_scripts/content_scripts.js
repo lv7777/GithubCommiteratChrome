@@ -43,6 +43,7 @@ function main(d) {
         //どっちもresolveにしてifで値を変化させてrejectはエラー用にしたほうがいいかもね
         filesendAPIararysis(d.username, d.repo, d.pass).then(function(){
             //update
+            //422エラーが出、、、出ますよ
             update(encodesrc, d.username, d.pass, d.repo, urlobj.dirpath, urlobj.filename);
         },
         function () {
@@ -222,8 +223,15 @@ function createfile(encodedata, username, pass, repo, path, file) {
 
 
 function update(encodedata, username, pass, repo, path, file) {
+/*
+httpstatuscode:422
 
-    var sha = getsha1(this.path);
+"message": "Invalid request.\n\n\"sha\" wasn't supplied.",
+
+#22 を参照
+
+*/
+    var sha = getsha1(username, pass, repo, path, file);
 
     var data = JSON.stringify({
         "message": "update",
@@ -270,5 +278,5 @@ function getsha1(username, pass, repo, path, file) {
     xhr.setRequestHeader('cache-control', 'no-cache');
 
 
-    xhr.send(null);
+    xhr.send(null);//エラー出てる。
 }
