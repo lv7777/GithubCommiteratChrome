@@ -231,7 +231,8 @@ httpstatuscode:422
 #22 を参照
 
 */
-    var sha = getsha1(username, pass, repo, path, file);
+//ここもpromise使わないと先に進んでいってしまう。
+    var sha = getsha1(username, pass, repo, path, file).then();
 
     var data = JSON.stringify({
         "message": "update",
@@ -263,20 +264,20 @@ httpstatuscode:422
 
 
 function getsha1(username, pass, repo, path, file) {
-    var xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
-    xhr.addEventListener('readystatechange', function () {
-        if (this.readyState === 4) {
-            console.log(this.responseText);
-        }
+    return new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+        xhr.addEventListener('readystatechange', function () {
+            if (this.readyState === 4) {
+                console.log(this.responseText);
+            }
+        });
+
+        xhr.open("GET", "https://api.github.com/repos/" + username + "/" + repo + "/contents/" + path);
+        let basic = window.btoa(unescape(encodeURIComponent(username + ":" + pass)));
+        xhr.setRequestHeader("authorization", "Basic " + basic);//ていうかホントは認証もいらないんだよね
+        xhr.setRequestHeader('cache-control', 'no-cache');
+
+        xhr.send(null);
     });
-
-
-    xhr.open("GET", "https://api.github.com/repos/" + username + "/" + repo + "/contents/" + path);
-    let basic = window.btoa(unescape(encodeURIComponent(username + ":" + pass)));
-    xhr.setRequestHeader("authorization", "Basic " + basic);//ていうかホントは認証もいらないんだよね
-    xhr.setRequestHeader('cache-control', 'no-cache');
-
-
-    xhr.send(null);//エラー出てる。
 }
