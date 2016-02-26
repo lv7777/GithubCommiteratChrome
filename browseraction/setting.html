@@ -20,8 +20,8 @@
             <label >リポジトリ:<input type="text" id="repo" class="form-control"></label>
                 <label >githubに送った時に保存されるディレクトリ（廃止予定）:<input type="text" id="path" class="form-control"></label>
             <div class="flexbox0">
-                <label class="tes" >このアドオンが有効化されるurl(正規表現):<input type="text" id="url" class="form-control regexp"></label>            
-                <label class="tes2">それに対応するXpath<input class="form-control xpath" id="url" type="text"></label>
+                <label class="tes" >有効化されるurl(正規表現)<input type="text" id="url" class="form-control regexp"></label>            
+                <label class="tes2">保存する要素のXpath<input class="form-control xpath" id="url" type="text"></label>
             </div>
             <select name="github_time" id="github_interval" class="form-control savetime">
                 <option value="100000">10秒</option>
@@ -48,6 +48,7 @@
         </select>
         </div>        
         <button type="submit" class="btn btn-default save">Save</button>
+        <button type="submit" class="btn btn-default save" onclick="openGithub()">githubを開く</button>
         </div>
     </body>
 </html>

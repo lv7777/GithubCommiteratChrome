@@ -29,10 +29,12 @@ function checkRegEx(reg) {
             console.log("regexpclear");
            var content;
             //xpathでdomを取得する組み込み関数
-            content = document.evaluate(xpatharr[i],document,null,XPathResult.ANY_TYPE,null);
+            content = document.evaluate(xpatharr[i],document,null,XPathResult.ANY_TYPE,null);           
             console.log(content);
-            if(0){};//チェック
-           return content;
+            if(0){//チェック
+              return content.singleNodeValue;//要素
+            };
+           
         }
     }
     return 0;

@@ -54,3 +54,6 @@ div[class^="flexbox"]{
 html,css{
     width: 600px
 }
+input#url{
+    margin-top: 30px;
+}
