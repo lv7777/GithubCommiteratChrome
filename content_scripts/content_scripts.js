@@ -232,7 +232,13 @@ httpstatuscode:422
 
 */
 //ここもpromise使わないと先に進んでいってしまう。
-    var sha = getsha1(username, pass, repo, path, file).then();
+    var sha ;
+    getsha1(username, pass, repo, path, file).then(function ok(shaobj) {
+        //ここでshaを取ってくる。
+        sha=shaobj.sha;
+    },function ng(errormsg){
+        console.log(errormsg);
+    });
 
     var data = JSON.stringify({
         "message": "update",
@@ -270,6 +276,7 @@ function getsha1(username, pass, repo, path, file) {
         xhr.addEventListener('readystatechange', function () {
             if (this.readyState === 4) {
                 console.log(this.responseText);
+                resolve(JSON.parse(this.responseText) );
             }
         });
 
